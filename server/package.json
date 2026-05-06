@@ -1,0 +1,32 @@
+{
+  "name": "plan-api",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "bun run  --watch ./ index.ts",
+    "init-prisma": "bunx --bun prisma init --datasource-provider sqlite --output ./generated",
+    "init-sqlite": "bunx --bun prisma migrate dev --name init",
+    "edit-prisma": "bunx --bun prisma generate"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/lodash": "^4.17.24",
+    "prisma": "^7.8.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@elysiajs/cors": "^1.4.2",
+    "@prisma/adapter-libsql": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.4.2",
+    "elysia": "^1.4.28",
+    "lodash": "^4.18.1",
+    "prisma-adapter-bun-sqlite": "^0.8.0",
+    "prismabox": "^1.1.26",
+    "uuid": "^14.0.0"
+  }
+}
