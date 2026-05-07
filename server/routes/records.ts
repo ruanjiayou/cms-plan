@@ -1,73 +1,73 @@
 import { Elysia } from "elysia";
-import { keyBy } from 'lodash'
-import { addDays, addHours, endOfDay, startOfDay, subDays, subMonths, addMonths } from 'date-fns'
-import db from "../prisma";
-import Response from '../utils/Response'
-import type { RecordCreateInput, RecordUpdateInput } from "../prisma/db/models";
+import { addDays, subDays } from 'date-fns'
+import extendPlugin from '@/utils/extend'
+import type { RecordCreateInput, RecordUpdateInput } from "@/prisma/db/models";
 
 const routes = new Elysia({ prefix: "/api/records" })
-  .decorate('Response', new Response())
-
+  .use(extendPlugin)
   // 获取所有记录（支持日期、类型筛选和分页）
-  .get("/", async ({ query, Response }) => {
+  .get("/", async (ctx) => {
+    const pagination = ctx.paginate(ctx.query)
     const where: any = {};
-    if (query.date) {
-      where.date = query.date;
+    if (ctx.query.date) {
+      where.date = ctx.query.date;
     }
-    const list = await db.record.findMany({
+    const list = await ctx.db.record.findMany({
       where,
-      orderBy: {}
+      orderBy: { time: 'asc' },
+      take: pagination.size,
+      skip: pagination.skip,
     })
-    return Response.success({ list })
+    return ctx.success({ list })
   })
 
   // 创建记录（带业务逻辑验证）
-  .post("/", async ({ body, Response }) => {
+  .post("/", async (ctx) => {
     try {
-      const data = body as RecordCreateInput
-      data.time = addHours(new Date(data.time), 16)
-      const record = await db.record.create({ data })
-      return Response.success({ info: record })
+      const data = ctx.body as RecordCreateInput
+      data.time = new Date(data.time)
+      const record = await ctx.db.record.create({ data })
+      return ctx.success({ info: record })
     } catch (error: any) {
-      return Response.failure(error.message)
+      return ctx.failure(error.message)
     }
   })
 
-  .get("/:date", async ({ params, Response }) => {
+  .get("/:date", async (ctx) => {
     try {
-      const date = new Date(params.date)
+      const date = new Date(ctx.params.date)
       // 42天
       const start = subDays(date, (date.getDay() === 0 ? 7 : date.getDay()) - 1);
       const end = addDays(start, 41);
-      const list = await db.record.findMany({
+      const list = await ctx.db.record.findMany({
         where: { time: { gte: start, lte: end } },
       })
-      return Response.success({ list });
+      return ctx.success({ list });
     } catch (error: any) {
-      return Response.failure(error.message)
+      return ctx.failure(error.message)
     }
   })
 
   // 更新记录
-  .put("/:id", async ({ params, body, Response }) => {
+  .put("/:id", async (ctx) => {
     try {
-      await db.record.update({
-        where: { id: params.id },
-        data: body as RecordUpdateInput
+      await ctx.db.record.update({
+        where: { id: ctx.params.id },
+        data: ctx.body as RecordUpdateInput
       })
-      return Response.success()
+      return ctx.success()
     } catch (error: any) {
-      return Response.failure(error.message)
+      return ctx.failure(error.message)
     }
   })
 
   // 删除记录
-  .delete("/:id", async ({ params, Response }) => {
+  .delete("/:id", async (ctx) => {
     try {
-      await db.record.delete({ where: { id: params.id } })
-      return Response.success()
+      await ctx.db.record.delete({ where: { id: ctx.params.id } })
+      return ctx.success()
     } catch (error: any) {
-      return Response.failure(error.message);
+      return ctx.failure(error.message);
     }
   })
 

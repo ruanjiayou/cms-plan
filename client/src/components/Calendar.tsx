@@ -15,26 +15,26 @@ import {
   Weekday,
   outside,
   DayNumber,
-  MealBlock,
-  MealLabel,
-  MealDishes,
-  DishTag,
-} from '../styles/MealPlanner'
+  RecordBlock,
+  RecordLabel,
+  RecordItem,
+  RecordTitle,
+} from '../styles/Calendar'
 
-const OneDish = ({ item }: { item: IRecord }) => {
+const One = ({ item }: { item: IRecord }) => {
   return (
-    <DishTag
+    <RecordTitle
       className={`dish-tag`}
     >
       {item.date}
-    </DishTag>
+    </RecordTitle>
   )
 }
 
-const Grids42 = ({ month, today, setSelectedDate }: { month: string, today: string, setSelectedDate: (date: string) => void }) => {
+const Grids42 = ({ month, }: { month: string, }) => {
   const state = useSnapshot(store)
-  const date = new Date(month);
-  const monthStart = startOfMonth(date);
+  const datetime = new Date(month);
+  const monthStart = startOfMonth(datetime);
   const start_of42 = subDays(monthStart, (monthStart.getDay() === 0 ? 7 : monthStart.getDay()) - 1);
   const end_of42 = addDays(start_of42, 41);
   const days = eachDayOfInterval({ start: start_of42, end: end_of42 })
@@ -47,52 +47,47 @@ const Grids42 = ({ month, today, setSelectedDate }: { month: string, today: stri
       return (
         <CalendarDay
           key={date}
-          className={`${!sameMonth ? outside : ''} ${date === today ? 'today' : ''}`}
+          className={`${!sameMonth ? outside : ''} ${date === state.app.today ? 'today' : ''} ${date === state.app.selectedDate ? 'active' : ''}`}
           onClick={() => {
-            if (sameMonth) {
-              if (!state.dateRecordsMap.get(date)) {
-                store.dateRecordsMap.set(date, [])
-              }
-              setSelectedDate(date)
+            store.app.setSelectedDate(date)
+            if (!sameMonth) {
+              datetime.getTime() > day.getTime() ? store.app.subMonth() : store.app.addMonth()
             }
           }}
         >
           <DayNumber>{format(day, 'd')}</DayNumber>
-          <MealBlock>
-            <MealDishes>
+          <RecordBlock>
+            <RecordItem>
               {records.map(v => (
-                <OneDish item={v} key={v.id} />
+                <One item={v} key={v.id} />
               ))}
-            </MealDishes>
-          </MealBlock>
+            </RecordItem>
+          </RecordBlock>
         </CalendarDay>
       )
     })}
   </CalendarDays>
 }
 
-const CacheGrid = memo(({ month, today, setSelectedDate }: { month: string, today: string, setSelectedDate: (date: string) => void }) => {
-  return <Grids42 month={month} today={today} setSelectedDate={setSelectedDate} />
-}, (prev, next) => {
-  return prev.month === next.month
-})
+// const CacheGrid = memo(({ month, }: { month: string, }) => {
+//   return <Grids42 month={month} />
+// }, (prev, next) => {
+//   return prev.month === next.month
+// })
 
 const Calendar = () => {
-  const state = useSnapshot(store)
-  const [selectedDate, setSelectedDate] = useState('')
+  const appState = useSnapshot(store.app)
   const swiperRef = useRef(null);
   useEffect(() => {
     loadDateRecords()
     // 获取本月所需数据(本月+前后7天)
-    getRecordsByDate(formatDate(state.currentDateTime, 'yyyy-MM')).then(list => {
+    getRecordsByDate(formatDate(appState.currentDateTime, 'yyyy-MM')).then(list => {
       store.setRecordsMap(list!)
     })
-  }, [state.currentDateTime])
+  }, [appState.currentDateTime])
 
   const loadDateRecords = async () => {
-    store.loadLocalRecords(state.currentDateTime)
-    // 计算本月部分数据的重复菜品
-    // state.calc_repeat(state.currentDateTime)
+    store.loadLocalRecords(appState.currentDateTime)
   }
 
   const onChange = () => {
@@ -117,17 +112,13 @@ const Calendar = () => {
             if (evt.activeIndex === 1) {
               return;
             }
-            if (evt.swipeDirection === 'prev') {
-              store.subMonth()
-            } else {
-              store.addMonth()
-            }
+            evt.swipeDirection === 'prev' ? store.app.subMonth() : store.app.addMonth()
             evt.slideTo(1, 0);
           }}
         >
-          {state.months.map(month => (
+          {appState.months.map(month => (
             <SwiperSlide key={month} id={month}>
-              <CacheGrid month={month} today={state.today} setSelectedDate={setSelectedDate} />
+              <Grids42 month={month} />
             </SwiperSlide>
           ))}
         </Swiper>

@@ -9,5 +9,10 @@ export const User = proxy({
   refresh_token: '',
   get isLogin() {
     return this.access_token !== '' && this.profile !== null
+  },
+  logout() {
+    this.profile = { nickname: '', avatar: '' };
+    this.access_token = '';
+    this.refresh_token = '';
   }
 })

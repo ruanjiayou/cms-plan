@@ -74,7 +74,7 @@ const User = () => {
           <MenuItem>{profile.nickname}</MenuItem>
           <MenuItem onClick={() => {
             logout()
-            store.logout()
+            store.user.logout()
           }} $align='center'>退出</MenuItem>
         </Menu>}
         animation="slide-up"
@@ -86,8 +86,8 @@ const User = () => {
         overlay={<Menu>
           <MenuItem onClick={() => authorize('google')}><Google style={{ height: 15 }} />google</MenuItem>
           <MenuItem onClick={() => authorize('alipay')}><Alipay style={{ height: 16 }} />支付宝</MenuItem>
-          <MenuItem className="disable" onClick={() => {
-            // authorize('github')
+          <MenuItem onClick={() => {
+            authorize('github')
           }}><Github style={{ height: 16 }} />github</MenuItem>
           <MenuItem className="disable" onClick={() => {
             // authorize('weibo')

@@ -25,33 +25,19 @@ export function useLocalProxy<T extends object>(initialState: T) {
 }
 
 const store = proxy<{
-  today: string,
-  currentDateTime: Date,
   app: typeof App,
   user: typeof User,
   tags: ITag[],
   dateRecordsMap: Map<string, IRecord[]>,
-  months: string[],
   loadLocalRecords: (datetime: Date) => void,
   setRecordsMap: (tags: IRecord[]) => void,
   addDateRecord: (record: IRecord) => void,
   removeDateRecord: (record: IRecord) => void,
-  addMonth: () => void,
-  subMonth: () => void,
-  logout: () => void,
 }>({
   app: App,
   user: User,
   tags: [],
-  currentDateTime: new Date(),
-  today: formatDate(new Date(), 'yyyy-MM-dd'),
   dateRecordsMap: proxyMap(),
-  get months() {
-    const curr = formatDate(this.currentDateTime, 'yyyy-MM-dd');
-    const prev = formatDate(subMonths(this.currentDateTime, 1), 'yyyy-MM-dd')
-    const next = formatDate(addMonths(this.currentDateTime, 1), 'yyyy-MM-dd')
-    return [prev, curr, next];
-  },
   // 从本地操作    
   loadLocalRecords(datetime: Date) {
     const start = startOfMonth(subMonths(datetime, 1));
@@ -86,18 +72,6 @@ const store = proxy<{
       storage.setValue(record.date, JSON.stringify(records))
     }
   },
-  // 月份切换
-  addMonth() {
-    this.currentDateTime = addMonths(new Date(this.currentDateTime), 1)
-  },
-  subMonth() {
-    this.currentDateTime = subMonths(new Date(this.currentDateTime), 1)
-  },
-  logout() {
-    this.user.profile = { nickname: '', avatar: '' };
-    this.user.access_token = '';
-    this.user.refresh_token = '';
-  }
 });
 
 export default store;

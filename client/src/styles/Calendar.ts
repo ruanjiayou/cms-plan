@@ -66,7 +66,7 @@ export const CalendarDay = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
-  &:hover {
+  &.active {
     border-color: #667eea;
     background-color: #f8f9ff;
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
@@ -77,11 +77,6 @@ export const CalendarDay = styled.div`
   &.other-month {
     opacity: 0.4;
     cursor: default;
-  }
-  &.other-month:hover {
-    border-color: #e0e0e0;
-    background-color: white;
-    box-shadow: none;
   }
 `
 export const outside = css`
@@ -97,7 +92,7 @@ export const DayNumber = styled.div`
     font-size: 12px;
   }
 `
-export const MealBlock = styled.div`
+export const RecordBlock = styled.div`
   display: flex;
   gap: 4px;
   align-items: flex-start;
@@ -110,7 +105,7 @@ export const MealBlock = styled.div`
     gap: 2px;
   }
 `
-export const MealLabel = styled.div`
+export const RecordLabel = styled.div`
   color: white;
   padding: 2px 4px;
   border-radius: 2px;
@@ -125,13 +120,13 @@ export const MealLabel = styled.div`
     background-color: #2196f3b0;
   }
 `
-export const MealDishes = styled.div`
+export const RecordItem = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 2px;
   flex: 1;
 `
-export const DishTag = styled.span`
+export const RecordTitle = styled.span`
   background-color: #ccc;
   color: #333;
   padding: 2px 4px;

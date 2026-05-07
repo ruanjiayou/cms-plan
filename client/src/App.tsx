@@ -57,7 +57,7 @@ export default () => {
               className={activeTab === 'planner' ? 'active' : ''}
               onClick={() => setActiveTab('planner')}
             >
-              <CalendarDays size={18} /> {formatDate(store.currentDateTime, 'yyyy-MM')}
+              <CalendarDays size={18} /> {formatDate(state.app.currentDateTime, 'yyyy-MM')}
             </TabButton>
           </TabNavigation>
 
