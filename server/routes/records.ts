@@ -25,7 +25,7 @@ const routes = new Elysia({ prefix: "/api/records" })
   .post("/", async (ctx) => {
     try {
       const data = ctx.body as RecordCreateInput
-      data.time = new Date(data.time)
+      data.time = data.time ? new Date(data.time) : new Date()
       const record = await ctx.db.record.create({ data })
       return ctx.success({ info: record })
     } catch (error: any) {

@@ -33,7 +33,7 @@ model Record {
   time     DateTime
   title    String
   content  String
-  tags     String
+  tags     Json
   priority Int
   status   Int
 }

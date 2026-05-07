@@ -27,6 +27,7 @@ export const routes = new Elysia({ prefix: "/api/tags" })
   .post("/", async (ctx) => {
     try {
       const data = ctx.body as TagCreateInput;
+      data.time = new Date();
 
       const info = await db.tag.create({ data: { ...data } });
       return ctx.success({ info })
