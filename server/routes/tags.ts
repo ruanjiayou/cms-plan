@@ -5,7 +5,7 @@ import type { TagUpdateInput, TagCreateInput } from "../prisma/db/models";
 
 export const routes = new Elysia({ prefix: "/api/tags" })
   .use(extendPlugin)
-  // 获取所有分类
+  // 获取所有标签
   .get("/", async (ctx) => {
     const list = await db.tag.findMany({
       where: {},
@@ -14,7 +14,7 @@ export const routes = new Elysia({ prefix: "/api/tags" })
     return ctx.success({ list })
   })
 
-  // 获取单个分类
+  // 获取单个标签
   .get("/:id", async (ctx) => {
     const info = await db.tag.findFirst({ where: { id: ctx.params.id } })
     if (!info) {
@@ -23,7 +23,7 @@ export const routes = new Elysia({ prefix: "/api/tags" })
     return ctx.success({ info });
   })
 
-  // 创建分类
+  // 创建标签
   .post("/", async (ctx) => {
     try {
       const data = ctx.body as TagCreateInput;
@@ -36,7 +36,7 @@ export const routes = new Elysia({ prefix: "/api/tags" })
     }
   })
 
-  // 更新分类 
+  // 更新标签
   .put("/:id",
     async (ctx) => {
       try {
@@ -50,7 +50,7 @@ export const routes = new Elysia({ prefix: "/api/tags" })
       }
     })
 
-  // 删除分类（级联删除会删除关联的菜品）
+  // 删除标签
   .delete("/:id", async (ctx) => {
     try {
       await db.tag.delete({ where: { id: ctx.params.id } })

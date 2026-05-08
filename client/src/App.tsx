@@ -9,6 +9,7 @@ import store from './store'
 import { AlignAside } from './styles/common'
 import LogoSVG from './asserts/logo.svg?react';
 import { Wrap, AppHeader, HeaderContent, AppMain, Logo, TabNavigation, TabButton } from './styles/App'
+import DrawerMenu from 'drawer-menu'
 
 export default () => {
   const state = useSnapshot(store)
@@ -45,6 +46,7 @@ export default () => {
   }, [])
   return (
     <Wrap>
+      <DrawerMenu />
       <AppHeader>
         <HeaderContent className={AlignAside}>
           <Logo>
