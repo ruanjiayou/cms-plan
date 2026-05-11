@@ -29,7 +29,18 @@ export default defineConfig(({ command, mode }) => {
   return {
     base: env.APP_SCOPE,
     plugins: [
-      wyw(),
+      wyw({
+        preserveCssPaths: true,
+        transformLibraries: true,
+        include: [/node_modules\/user-info/, './src/**/*.{ts,tsx}'],
+        babelOptions: {
+          presets: [
+            '@babel/preset-typescript',
+            '@babel/preset-react',
+            '@linaria/babel-preset',
+          ],
+        },
+      }),
       react(),
       svgr(),
       VitePWA({
@@ -55,19 +66,21 @@ export default defineConfig(({ command, mode }) => {
       }),
     ],
     optimizeDeps: {
-      include: ['lucide-react'],  // 强制预构建 lucide-react
-      rolldownOptions: {
-        // 处理 "use client" 指令
-        supported: {
-          'dynamic-import': true
-        }
-      }
+      include: [
+        'react',
+        'react-dom'
+      ],
+      // 关键：让 Vite 扫描项目目录外的源码文件，自动发现它们依赖的库
+      entries: [
+        './index.html',
+        './src/**/*.{ts,tsx}',
+      ],
+    },
+    resolve: {
+      dedupe: ['react', 'react-dom']
     },
     build: {
       outDir: 'plan',
-      commonjsOptions: {
-        include: [/lucide-react/, /node_modules/]
-      },
     },
     server: {
       host: true,
@@ -75,9 +88,9 @@ export default defineConfig(({ command, mode }) => {
       allowedHosts: ['max.local', 'jiayou.work'],
       proxy: {
         '/gw/plan': {
-          target: 'http://localhost:3367', // 后端接口地址
+          target: 'https://jiayou.work', // 后端接口地址
           changeOrigin: true, // 允许跨域
-          rewrite: path => path.replace(`/gw/plan`, '')
+          // rewrite: path => path.replace(`/gw/plan`, '')
         }
       }
     }

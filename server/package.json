@@ -3,9 +3,9 @@
   "module": "app.ts",
   "type": "module",
   "scripts": {
-    "start": "bun run app.ts.ts",
-    "dev": "bun run  --watch ./ app.ts.ts",
-    "init-prisma": "bunx --bun prisma init --datasource-provider sqlite --output ./generated",
+    "start": "bun run app.ts",
+    "dev": "DATABASE_DIR=file:../tmp/ bun run  --watch ./ app.ts.ts",
+    "init-prisma": "bunx --bun prisma init --datasource-provider sqlite --output ./db",
     "init-sqlite": "bunx --bun prisma migrate dev --name init",
     "edit-prisma": "bunx --bun prisma generate"
   },

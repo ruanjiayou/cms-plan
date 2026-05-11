@@ -3,13 +3,12 @@ import Calendar from './components/Calendar'
 import { CalendarDays } from 'lucide-react'
 import { getAccessToken, getRecordsByDate, getProfile, getTags } from './apis/'
 import { formatDate } from 'date-fns'
-import UserStatus from './components/UserStatus'
+import UserInfo from 'user-info'
 import { useSnapshot } from 'valtio'
 import store from './store'
 import { AlignAside } from './styles/common'
 import LogoSVG from './asserts/logo.svg?react';
 import { Wrap, AppHeader, HeaderContent, AppMain, Logo, TabNavigation, TabButton } from './styles/App'
-import DrawerMenu from 'drawer-menu'
 
 export default () => {
   const state = useSnapshot(store)
@@ -46,7 +45,6 @@ export default () => {
   }, [])
   return (
     <Wrap>
-      <DrawerMenu />
       <AppHeader>
         <HeaderContent className={AlignAside}>
           <Logo>
@@ -63,7 +61,7 @@ export default () => {
             </TabButton>
           </TabNavigation>
 
-          <UserStatus />
+          <UserInfo />
         </HeaderContent>
       </AppHeader>
 

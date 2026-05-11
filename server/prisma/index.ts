@@ -1,10 +1,10 @@
 import { PrismaClient } from "./db/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
-import { config } from "dotenv"
+import path from 'path'
 
-config({ path: ".env" })
+const url = path.join(process.env.DATABASE_DIR as string, 'plan.db');
 
-const adapter = new PrismaLibSql({ url: process.env.DATABASE_URL as string });
+const adapter = new PrismaLibSql({ url });
 const prisma = new PrismaClient({ adapter });
 
 // 测试数据库连接
