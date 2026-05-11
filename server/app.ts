@@ -4,6 +4,8 @@ import tagRoute from './routes/tags'
 import recordRoute from './routes/records'
 import extendPlugin from "./utils/extend";
 
+const PORT = process.env.PORT;
+
 export const app = new Elysia()
   .use(cors({
     origin: true,           // 允许所有来源
@@ -26,6 +28,6 @@ export const app = new Elysia()
   // 注册路由
   .use(tagRoute)
   .use(recordRoute)
-  .listen(3367);
+  .listen(PORT);
 
-console.log("🌐 服务器运行在 http://localhost:3367");
+console.log(`🌐 服务器运行在 http://localhost:${PORT}`);

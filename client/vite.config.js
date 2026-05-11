@@ -16,7 +16,7 @@ export default defineConfig(({ command, mode }) => {
     orientation: "portrait",
     start_url: `${env.APP_SCOPE}`,
     id: env.APP_NAME,
-    scope: `${env.APP_SCOPE}`,
+    scope: `/`,
     display: "fullscreen",
     icons: [
       {
